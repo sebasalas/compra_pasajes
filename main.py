@@ -180,32 +180,66 @@ class CompraPasajes(unittest.TestCase):
         # Se ingresa número de tarjeta
         card_number_deb.send_keys(var_card_number_deb, Keys.TAB)
 
-        sleep(2)
-        # Selecciona mes de expiración
-        deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
-        deb_continuar.click()
-        sleep(10)
-        # Asigna elemento de rut
-        # rut_cliente = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.ID, 'rutCliente')))
-        rut_cliente = driver.find_element(By.ID, 'rutCliente')
-        # Limpia valor
-        rut_cliente.clear()
-        # Se ingresa rut
-        rut_cliente.send_keys(var_banco_rut)
-        # Click en continuar
-        boton_continuar = driver.find_element(By.ID, 'btnIngresar')
-        boton_continuar.click()
+        if(var_banco == "1"):
 
-        # Asigna elemento de clave dinámica
-        clave_dinamica = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.ID, 'pinVisible')))
-        clave_dinamica.clear()
+            sleep(2)
+            # Selecciona mes de expiración
+            deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
+            deb_continuar.click()
+            sleep(10)
+            # Asigna elemento de rut
+            # rut_cliente = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.ID, 'rutCliente')))
+            rut_cliente = driver.find_element(By.ID, 'rutCliente')
+            # Limpia valor
+            rut_cliente.clear()
+            # Se ingresa rut
+            rut_cliente.send_keys(var_banco_rut)
+            # Click en continuar
+            boton_continuar = driver.find_element(By.ID, 'btnIngresar')
+            boton_continuar.click()
 
-        # Se ingresa clave dinámica vía terminal
-        dinamica = input('Clave dinámica: ')
-        clave_dinamica.send_keys(dinamica, Keys.TAB)
-        # Click en continuar
-        aceptar_dinamica = driver.find_element(By.ID, 'btnAutorizar')
-        aceptar_dinamica.click()
+            # Asigna elemento de clave dinámica
+            clave_dinamica = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.ID, 'pinVisible')))
+            clave_dinamica.clear()
+
+            # Se ingresa clave dinámica vía terminal
+            dinamica = input('Clave dinámica: ')
+            clave_dinamica.send_keys(dinamica, Keys.TAB)
+            # Click en continuar
+            aceptar_dinamica = driver.find_element(By.ID, 'btnAutorizar')
+            aceptar_dinamica.click()
+
+        else:
+
+            sleep(1)
+            rut_deb = driver.find_element(By.ID, 'card-dni')
+            rut_deb.clear()
+            rut_deb.send_keys(var_banco_rut, Keys.TAB)
+
+            sleep(1)
+            deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
+            deb_continuar.click()
+            # sleep(10)
+            # Asigna elemento de rut
+            rut_cliente = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.ID, 'rut')))
+            # rut_cliente = driver.find_element(By.ID, 'rut')
+            # Limpia valor
+            rut_cliente.clear()
+            # Se ingresa rut
+            rut_cliente.send_keys(var_banco_rut)
+            # Asigna elemento de password
+            password_cliente = driver.find_element(By.NAME, 'pin')
+            # Limpia valor
+            password_cliente.clear()
+            # Se ingresa password
+            password_cliente.send_keys(var_banco_password)
+            # Click en continuar
+            boton_continuar = driver.find_element(By.XPATH, '/html/body/div/div[2]/div/form/div[7]/button[1]')
+            boton_continuar.click()
+
+            # Autorizar transacción
+            boton_autorizar = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/form/div/div/div[1]/button')))
+            boton_autorizar.click()
 
         src = var_src
         trg = var_trg

@@ -3,6 +3,7 @@ import sys
 var_numero_pasaje_ida = 18
 var_numero_pasaje_vuelta = 17
 var_semana = 3
+var_banco = 1 # 1: itau, 2: scotiabank
 var_nombre = 'Juan'
 var_apellido = 'Perez'
 var_rut = '11111111-1'
@@ -20,6 +21,7 @@ else:
      var_trg = '/home/juan/Documents/pasajes'
 var_url = 'http://ventaweb.pullmanflorida.cl/'
 var_banco_rut = '22222222-2'
+var_banco_password = 'abc123'
 var_credito = 0
 dictpasaje = {}
 for i in range(1, 45):
