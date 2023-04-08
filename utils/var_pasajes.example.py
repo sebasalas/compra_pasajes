@@ -20,6 +20,7 @@ else:
      var_trg = '/home/juan/Documents/pasajes'
 var_url = 'http://ventaweb.pullmanflorida.cl/'
 var_banco_rut = '22222222-2'
+var_banco_password = 'abc123'
 var_credito = 0
 dictpasaje = {}
 for i in range(1, 45):
