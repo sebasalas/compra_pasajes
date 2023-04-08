@@ -19,7 +19,7 @@ from utils.var_pasajes import *
 class CompraPasajes(unittest.TestCase):
 
     def setUp(self):
-        self.driver = self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         driver = self.driver
         driver.implicitly_wait(10)
         driver.get(var_url)
