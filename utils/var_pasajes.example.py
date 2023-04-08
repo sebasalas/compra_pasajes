@@ -26,3 +26,10 @@ for i in range(1, 45):
     row = (i - 1) // 4 + 1
     col = i % 4 if i % 4 != 0 else 4
     dictpasaje[i] = f"div[{row}]/div[{col}]"
+day_map = {
+    '1': '01_lunes',
+    '2': '02_martes',
+    '3': '03_miercoles',
+    '4': '04_jueves',
+    '5': '05_viernes'
+}

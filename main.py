@@ -207,18 +207,31 @@ class CompraPasajes(unittest.TestCase):
         aceptar_dinamica = driver.find_element(By.ID, 'btnAutorizar')
         aceptar_dinamica.click()
 
+        src = var_src
+        trg = var_trg
+
+        # Elimina los archivos que comienzan con "Comprobante*" en la carpeta origen
+        for f in glob.glob(os.path.join(src, "Comprobante*")):
+            if os.path.isfile(f):
+                os.remove(f)
+
         # Asigna elemento botón de descarga de pdf
         descargar_pdf = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span')))
         descargar_pdf.click()
 
         sleep(3)
-        # Se mueve el archivo descargado a carpeta destino
-        src = var_src
-        trg = var_trg
-        files = glob.iglob(os.path.join(src, "Comprobante*"))
-        for file in files:
+        
+        # Encuentra el archivo que cumple con el patrón "Comprobante*" y lo mueve a la carpeta destino
+        files = glob.glob(os.path.join(src, "Comprobante*"))
+
+        if len(files) == 1:
+            file = files[0]
             if os.path.isfile(file):
-                shutil.move(file, trg)
+                # Rename the file before moving it
+                new_file_name = f"{day_map[dia]}.pdf"
+                new_file_path = os.path.join(trg, new_file_name)
+                shutil.move(file, new_file_path)
+
 
     def tearDown(self):
         self.driver.close()
