@@ -250,7 +250,7 @@ class CompraPasajes(unittest.TestCase):
                 os.remove(f)
 
         # Asigna elemento botón de descarga de pdf
-        descargar_pdf = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span')))
+        descargar_pdf = WebDriverWait(self.driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span')))
         descargar_pdf.click()
 
         sleep(3)
