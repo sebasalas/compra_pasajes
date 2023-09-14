@@ -28,6 +28,9 @@ class CompraPasajes(unittest.TestCase):
     def test_comprar_pasajes(self):
         driver = self.driver
 
+        nuevo_cerrar = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div/div/div/button')
+        nuevo_cerrar.click()
+
         # Selecciona opción de Ida y Vuelta (radio)
         ida_vuelta = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/ul/li[2]/div/label')
         ida_vuelta.click()
@@ -42,7 +45,7 @@ class CompraPasajes(unittest.TestCase):
         destino = driver.find_element(By.ID, 'ciudadDestino')
         destino.click()
         # Selecciona Santiago
-        santiago = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/div/div[2]/div/select/option[3]')
+        santiago = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/div/div[2]/div/select/option[4]')
         santiago.click()
 
         # Despliega calendario de Fecha Ida
@@ -80,10 +83,10 @@ class CompraPasajes(unittest.TestCase):
         hora_ida.click()
 
         # Si es viernes, se asigna horario vuelta a las 17:30, de lo contrario, a las 18:30
-        if (dia == "5"):
-            radio_vuelta = 'radioVuelta-3'
-        else:
-            radio_vuelta = 'radioVuelta-4'
+        # if (dia == "4"):
+        #     radio_vuelta = 'radioVuelta-6'
+        # else:
+        radio_vuelta = 'radioVuelta-6'
 
         # Selecciona hora de vuelta (radio)
         hora_vuelta = driver.find_element(By.ID, f'{radio_vuelta}')
