@@ -2,6 +2,9 @@ import sys
 
 var_numero_pasaje_ida = 18
 var_numero_pasaje_vuelta = 17
+var_hora_ida = '09:00'
+var_hora_vuelta = '19:00'
+var_hora_vuelta_v = '14:00'
 var_semana = 3
 var_banco = 1 # 1: itau, 2: scotiabank
 var_nombre = 'Juan'
