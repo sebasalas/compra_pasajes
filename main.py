@@ -28,8 +28,8 @@ class CompraPasajes(unittest.TestCase):
     def test_comprar_pasajes(self):
         driver = self.driver
 
-        nuevo_cerrar = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div/div/div/button')
-        nuevo_cerrar.click()
+        # nuevo_cerrar = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div/div/div/button')
+        # nuevo_cerrar.click()
 
         # Selecciona opción de Ida y Vuelta (radio)
         ida_vuelta = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/ul/li[2]/div/label')
@@ -79,18 +79,21 @@ class CompraPasajes(unittest.TestCase):
         boton_comprar_pasaje.click()
 
         # Selecciona hora de ida (radio)
-        hora_ida = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, 'radioIda-0')))
-        hora_ida.click()
+        hora_ida = var_hora_ida
+        xpath_hora_ida = f"//table[@id='IdTable']//td[text()='{hora_ida}']/preceding-sibling::td/input[@type='radio']"
+        hora_ida_radio = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath_hora_ida)))
+        hora_ida_radio.click()
 
         # Si es viernes, se asigna horario vuelta a las 17:30, de lo contrario, a las 18:30
-        # if (dia == "4"):
-        #     radio_vuelta = 'radioVuelta-6'
-        # else:
-        radio_vuelta = 'radioVuelta-6'
+        if (dia == 5):
+            hora_vuelta = var_hora_vuelta
+        else:
+            hora_vuelta = var_hora_vuelta_v
 
         # Selecciona hora de vuelta (radio)
-        hora_vuelta = driver.find_element(By.ID, f'{radio_vuelta}')
-        hora_vuelta.click()
+        xpath_hora_vuelta = f"//table[@id='IdTable1']//td[text()='{hora_vuelta}']/preceding-sibling::td/input[@type='radio']"
+        hora_vuelta_radio = driver.find_element(By.XPATH, f'{xpath_hora_vuelta}')
+        hora_vuelta_radio.click()
 
         # Click en Siguiente
         boton_siguiente_horario = driver.find_element(By.ID, 'btnSiguientePaso1')
@@ -212,7 +215,7 @@ class CompraPasajes(unittest.TestCase):
             aceptar_dinamica = driver.find_element(By.ID, 'btnAutorizar')
             aceptar_dinamica.click()
 
-        else:
+        elif(var_banco == "2"):
 
             sleep(1)
             rut_deb = driver.find_element(By.ID, 'card-dni')
@@ -243,6 +246,17 @@ class CompraPasajes(unittest.TestCase):
             # Autorizar transacción
             boton_autorizar = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/form/div/div/div[1]/button')))
             boton_autorizar.click()
+
+        else:
+
+            sleep(1)
+            rut_deb = driver.find_element(By.ID, 'card-dni')
+            rut_deb.clear()
+            rut_deb.send_keys(var_banco_rut, Keys.TAB)
+
+            sleep(1)
+            deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
+            deb_continuar.click()
 
         src = var_src
         trg = var_trg
