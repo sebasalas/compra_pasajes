@@ -28,9 +28,6 @@ class CompraPasajes(unittest.TestCase):
     def test_comprar_pasajes(self):
         driver = self.driver
 
-        # nuevo_cerrar = driver.find_element(By.XPATH, '/html/body/div[3]/div[2]/div/div/div/button')
-        # nuevo_cerrar.click()
-
         # Selecciona opción de Ida y Vuelta (radio)
         ida_vuelta = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/ul/li[2]/div/label')
         ida_vuelta.click()
@@ -86,9 +83,9 @@ class CompraPasajes(unittest.TestCase):
 
         # Si es viernes, se asigna horario vuelta a las 17:30, de lo contrario, a las 18:30
         if (dia == 5):
-            hora_vuelta = var_hora_vuelta
-        else:
             hora_vuelta = var_hora_vuelta_v
+        else:
+            hora_vuelta = var_hora_vuelta
 
         # Selecciona hora de vuelta (radio)
         xpath_hora_vuelta = f"//table[@id='IdTable1']//td[text()='{hora_vuelta}']/preceding-sibling::td/input[@type='radio']"
@@ -290,7 +287,16 @@ class CompraPasajes(unittest.TestCase):
 
 if __name__ == "__main__":
     # dia: 1-5 (lunes a viernes)
-    dia = input('Día de la semana (1-5): ')
+    while True:
+        dia_str = input('Día de la semana (1-5): ')
+        try:
+            dia = int(dia_str)
+            if 1 <= dia <= 5:
+                break
+            else:
+                print("Entrada no válida: Por favor, introduce un número entre 1 y 5 inclusive")
+        except ValueError:
+            print("Entrada no válida: Por favor, introduce un valor numérico")
     # semana: 1-6 (según fila en calendario)
     semana = var_semana
     numero_pasaje_ida = var_numero_pasaje_ida
