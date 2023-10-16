@@ -17,7 +17,12 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from utils.var_pasajes import *
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename='test_log.log', filemode='w')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='test_log.log', filemode='w')
+
+NOT_FOUND_ERROR_MSG = "Element with '{}' '{}' was not found."
+CLICKABLE_ERROR_MSG = "Element with '{}' '{}' was not clickable after {} seconds."
+CSS_SELECTOR_DEB_CONTINUAR = 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button'
+XPATH_MES_SIGUIENTE = '/html/body/div[4]/div/a[2]'
 
 class CompraPasajes(unittest.TestCase):
 
@@ -33,13 +38,13 @@ class CompraPasajes(unittest.TestCase):
     def test_comprar_pasajes(self):
         logging.info("Comenzando test_comprar_pasajes")
         driver = self.driver
-
+        
         logging.info("INICIO PAGINA 1 (Buscar Horarios o Compra de Pasajes)")
         # Selecciona opción de Ida y Vuelta (radio)
         try:
             ida_vuelta = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/ul/li[2]/div/label')
         except NoSuchElementException:
-            logging.error("Element with XPATH '{}' was not found.".format('/html/body/section[1]/div[2]/div[2]/div/div/ul/li[2]/div/label'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', '/html/body/section[1]/div[2]/div[2]/div/div/ul/li[2]/div/label'))
             raise
         ida_vuelta.click()
         logging.info("Selected Ida y Vuelta option")
@@ -48,14 +53,14 @@ class CompraPasajes(unittest.TestCase):
         try:
             origen = driver.find_element(By.ID, 'ciudadOrigen')
         except NoSuchElementException:
-            logging.error("Element with ID '{}' was not found.".format('ciudadOrigen'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'ciudadOrigen'))
             raise
         origen.click()
         # Selecciona Rancagua
         try:
             rancagua = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/div/div[1]/div/select/option[6]')
         except NoSuchElementException:
-            logging.error("Element with XPATH '{}' was not found.".format('/html/body/section[1]/div[2]/div[2]/div/div/div/div[1]/div/select/option[6]'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', '/html/body/section[1]/div[2]/div[2]/div/div/div/div[1]/div/select/option[6]'))
             raise
         rancagua.click()
         logging.info("Selected Rancagua como ciudad de origen")
@@ -63,14 +68,14 @@ class CompraPasajes(unittest.TestCase):
         try:
             destino = driver.find_element(By.ID, 'ciudadDestino')
         except NoSuchElementException:
-            logging.error("Element with ID '{}' was not found.".format('ciudadDestino'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'ciudadDestino'))
             raise
         destino.click()
         # Selecciona Santiago
         try:
             santiago = driver.find_element(By.XPATH, '/html/body/section[1]/div[2]/div[2]/div/div/div/div[2]/div/select/option[4]')
         except NoSuchElementException:
-            logging.error("Element with XPATH '{}' was not found.".format('/html/body/section[1]/div[2]/div[2]/div/div/div/div[2]/div/select/option[4]'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', '/html/body/section[1]/div[2]/div[2]/div/div/div/div[2]/div/select/option[4]'))
             raise
         santiago.click()
         logging.info("Selected Santiago como ciudad de destino")
@@ -79,16 +84,16 @@ class CompraPasajes(unittest.TestCase):
         try:
             fecha_ida = driver.find_element(By.ID, 'fechaIda')
         except NoSuchElementException:
-            logging.error("Element with ID '{}' was not found.".format('fechaIda'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'fechaIda'))
             raise
         fecha_ida.click()
 
         # Selecciona mes siguiente si es necesario cambiar calendario
         if var_mes_siguiente == 1:
             try:
-                mes_siguiente_ida = driver.find_element(By.XPATH, '/html/body/div[4]/div/a[2]')
+                mes_siguiente_ida = driver.find_element(By.XPATH, XPATH_MES_SIGUIENTE)
             except NoSuchElementException:
-                logging.error("Element with XPATH '{}' was not found.".format('/html/body/div[4]/div/a[2]'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', XPATH_MES_SIGUIENTE))
                 raise
             logging.info("Selected mes siguiente ida")
             mes_siguiente_ida.click()
@@ -97,7 +102,7 @@ class CompraPasajes(unittest.TestCase):
         try:
             dia_ida = driver.find_element(By.XPATH, f'/html/body/div[4]/table/tbody/tr[{semana}]/td[{dia}]/a')
         except NoSuchElementException:
-            logging.error("Element with XPATH '{}' was not found.".format(f'/html/body/div[4]/table/tbody/tr[{semana}]/td[{dia}]/a'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', f'/html/body/div[4]/table/tbody/tr[{semana}]/td[{dia}]/a'))
             raise
         dia_ida.click()
         logging.info("Selected fecha de ida")
@@ -106,16 +111,16 @@ class CompraPasajes(unittest.TestCase):
         try:
             fecha_vuelta = driver.find_element(By.ID, 'fechaVuelta')
         except NoSuchElementException:
-            logging.error("Element with ID '{}' was not found.".format('fechaVuelta'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'fechaVuelta'))
             raise
         fecha_vuelta.click()
 
         # Selecciona mes siguiente si es necesario cambiar calendario
         if var_mes_siguiente == 1:
             try:
-                mes_siguiente_vuelta = driver.find_element(By.XPATH, '/html/body/div[4]/div/a[2]')
+                mes_siguiente_vuelta = driver.find_element(By.XPATH, XPATH_MES_SIGUIENTE)
             except NoSuchElementException:
-                logging.error("Element with XPATH '{}' was not found.".format('/html/body/div[4]/div/a[2]'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', XPATH_MES_SIGUIENTE))
                 raise
             logging.info("Selected mes siguiente vuelta")
             mes_siguiente_vuelta.click()
@@ -124,7 +129,7 @@ class CompraPasajes(unittest.TestCase):
         try:
             dia_vuelta = driver.find_element(By.XPATH, f'/html/body/div[4]/table/tbody/tr[{semana}]/td[{dia}]/a')
         except NoSuchElementException:
-            logging.error("Element with XPATH '{}' was not found.".format(f'/html/body/div[4]/table/tbody/tr[{semana}]/td[{dia}]/a'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', f'/html/body/div[4]/table/tbody/tr[{semana}]/td[{dia}]/a'))
             raise
         dia_vuelta.click()
         logging.info("Selected fecha de vuelta")
@@ -133,7 +138,7 @@ class CompraPasajes(unittest.TestCase):
         try:
             boton_comprar_pasaje = driver.find_element(By.ID, 'btnBuscarViaje')
         except NoSuchElementException:
-            logging.error("Element with ID '{}' was not found.".format('btnBuscarViaje'))
+            logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'btnBuscarViaje'))
             raise
         boton_comprar_pasaje.click()
         logging.info("FIN PAGINA 1")
@@ -147,7 +152,7 @@ class CompraPasajes(unittest.TestCase):
         try:
             hora_ida_radio = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath_hora_ida)))
         except TimeoutException:
-            logging.error("Element with XPATH '{}' was not clickable after 10 seconds.".format(xpath_hora_ida))
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', xpath_hora_ida, 10))
             raise
         
         hora_ida_radio.click()
@@ -178,7 +183,7 @@ class CompraPasajes(unittest.TestCase):
         try:
             pasaje_ida = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_ida]}')))
         except TimeoutException:
-            logging.error("Element with XPATH '{}' was not clickable after 10 seconds.".format(f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_ida]}'))
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_ida]}', 10))
             raise
         pasaje_ida.click()
         logging.info(f"Selected asiento de ida: {numero_pasaje_ida}")
@@ -194,11 +199,11 @@ class CompraPasajes(unittest.TestCase):
 
         logging.info("INICIO PAGINA 4 (Detalle de venta y datos personales)")
         # Despliega opciones de subida ida (select)
-        logging.debug(f"Waiting for element with ID: 'lugarSubida1'")
+        logging.debug("Waiting for element with ID: 'lugarSubida1'")
         try:
             subida_ida = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, 'lugarSubida1')))
         except TimeoutException:
-            logging.error("Element with ID '{}' was not clickable after 10 seconds.".format('lugarSubida1'))
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'lugarSubida1', 10))
             raise
         subida_ida.click()
         # Selecciona Shopping
@@ -279,20 +284,20 @@ class CompraPasajes(unittest.TestCase):
 
         logging.info("INICIO PAGINA 5 (Webpay)")
         # Selecciona forma de pago
-        logging.debug(f"Waiting for element with ID: 'tarjetas'")
+        logging.debug("Waiting for element with ID: 'tarjetas'")
         try:
             boton_tarjetas = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, 'tarjetas')))
         except TimeoutException:
-            logging.error("Element with ID '{}' was not clickable after 10 seconds.".format('tarjetas'))
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'tarjetas', 10))
             raise
         boton_tarjetas.click()
         logging.info("Selected tarjetas")
         # Código sólo para débito
-        logging.debug(f"Waiting for element with ID: 'card-number'")
+        logging.debug("Waiting for element with ID: 'card-number'")
         try:
             card_number_deb = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, 'card-number')))
         except TimeoutException:
-            logging.error("Element with ID '{}' was not clickable after 10 seconds.".format('card-number'))
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'card-number', 10))
             raise
         # Limpia valor
         card_number_deb.clear()
@@ -309,10 +314,11 @@ class CompraPasajes(unittest.TestCase):
             logging.info("INICIO PAGINA 6 (Banco Itau)")
 
             sleep(2)
+
             try:
-                deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
+                deb_continuar = driver.find_element(By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)
             except NoSuchElementException:
-                logging.error("Element with CSS_SELECTOR '{}' was not found.".format('body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR))
                 raise
             deb_continuar.click()
             sleep(10)
@@ -320,7 +326,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 rut_cliente = driver.find_element(By.ID, 'rutCliente')
             except NoSuchElementException:
-                logging.error("Element with ID '{}' was not found.".format('rutCliente'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'rutCliente'))
                 raise
             # Limpia valor
             rut_cliente.clear()
@@ -332,15 +338,15 @@ class CompraPasajes(unittest.TestCase):
             try:
                 boton_continuar = driver.find_element(By.ID, 'btnIngresar')
             except NoSuchElementException:
-                logging.error("Element with ID '{}' was not found.".format('btnIngresar'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'btnIngresar'))
                 raise
             boton_continuar.click()
             # Asigna elemento de clave dinámica
-            logging.debug(f"Waiting for element with ID: 'pinVisible'")
+            logging.debug("Waiting for element with ID: 'pinVisible'")
             try:
                 clave_dinamica = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.ID, 'pinVisible')))
             except TimeoutException:
-                logging.error("Element with ID '{}' was not clickable after 10 seconds.".format('pinVisible'))
+                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'pinVisible', 10))
                 raise
             # Limpia valor
             clave_dinamica.clear()
@@ -353,7 +359,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 aceptar_dinamica = driver.find_element(By.ID, 'btnAutorizar')
             except NoSuchElementException:
-                logging.error("Element with ID '{}' was not found.".format('btnAutorizar'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'btnAutorizar'))
                 raise
             aceptar_dinamica.click()
 
@@ -366,7 +372,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 rut_deb = driver.find_element(By.ID, 'card-dni')
             except NoSuchElementException:
-                logging.error("Element with ID '{}' was not found.".format('card-dni'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'card-dni'))
                 raise
             rut_deb.clear()
             rut_deb.send_keys(var_banco_rut, Keys.TAB)
@@ -375,19 +381,19 @@ class CompraPasajes(unittest.TestCase):
 
             sleep(1)
             try:
-                deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
+                deb_continuar = driver.find_element(By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)
             except NoSuchElementException:
-                logging.error("Element with CSS_SELECTOR '{}' was not found.".format('body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR))
                 raise
             deb_continuar.click()
             logging.info("INICIO PAGINA 6 (Banco scotiabank)")
             # sleep(10)
             # Asigna elemento de rut
-            logging.debug(f"Waiting for element with ID: 'rut'")
+            logging.debug("Waiting for element with ID: 'rut'")
             try:
                 rut_cliente = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.ID, 'rut')))
             except TimeoutException:
-                logging.error("Element with ID '{}' was not clickable after 10 seconds.".format('rut'))
+                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'rut', 10))
                 raise
             # Limpia valor
             rut_cliente.clear()
@@ -399,7 +405,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 password_cliente = driver.find_element(By.NAME, 'pin')
             except NoSuchElementException:
-                logging.error("Element with NAME '{}' was not found.".format('pin'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('NAME', 'pin'))
                 raise
             # Limpia valor
             password_cliente.clear()
@@ -411,16 +417,16 @@ class CompraPasajes(unittest.TestCase):
             try:
                 boton_continuar = driver.find_element(By.XPATH, '/html/body/div/div[2]/div/form/div[7]/button[1]')
             except NoSuchElementException:
-                logging.error("Element with XPATH '{}' was not found.".format('/html/body/div/div[2]/div/form/div[7]/button[1]'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', '/html/body/div/div[2]/div/form/div[7]/button[1]'))
                 raise
             boton_continuar.click()
 
             # Autorizar transacción
-            logging.debug(f"Waiting for element with XPATH: '/html/body/div[1]/div[2]/div/form/div/div/div[1]/button'")
+            logging.debug("Waiting for element with XPATH: '/html/body/div[1]/div[2]/div/form/div/div/div[1]/button'")
             try:
                 boton_autorizar = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/form/div/div/div[1]/button')))
             except TimeoutException:
-                logging.error("Element with XPATH '{}' was not clickable after 10 seconds.".format('/html/body/div[1]/div[2]/div/form/div/div/div[1]/button'))
+                logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div[1]/div[2]/div/form/div/div/div[1]/button', 50))
                 raise
             boton_autorizar.click()
 
@@ -431,7 +437,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 rut_deb = driver.find_element(By.ID, 'card-dni')
             except NoSuchElementException:
-                logging.error("Element with ID '{}' was not found.".format('card-dni'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'card-dni'))
                 raise
             rut_deb.clear()
             rut_deb.send_keys(var_banco_rut, Keys.TAB)
@@ -440,9 +446,9 @@ class CompraPasajes(unittest.TestCase):
 
             sleep(1)
             try:
-                deb_continuar = driver.find_element(By.CSS_SELECTOR, 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button')
+                deb_continuar = driver.find_element(By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)
             except NoSuchElementException:
-                logging.error("Element with CSS_SELECTOR '{}' was not found.".format('body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button'))
+                logging.error(NOT_FOUND_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR))
                 raise
             logging.info("FIN PAGINA 5")
             logging.info("INICIO PAGINA 6 (MACH)")
@@ -462,11 +468,11 @@ class CompraPasajes(unittest.TestCase):
                 logging.info("Removed files")
 
         # Asigna elemento botón de descarga de pdf
-        logging.debug(f"Waiting for element with XPATH: '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span'")
+        logging.debug("Waiting for element with XPATH: '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span'")
         try:
             descargar_pdf = WebDriverWait(self.driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span')))
         except TimeoutException:
-            logging.error("Element with XPATH '{}' was not clickable after 120 seconds.".format('/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span'))
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span', 120))
             raise
         descargar_pdf.click()
         logging.info("Clicked descargar pdf")
@@ -476,16 +482,20 @@ class CompraPasajes(unittest.TestCase):
         # Encuentra el archivo que cumple con el patrón "Comprobante*" y lo mueve a la carpeta destino
         files = glob.glob(os.path.join(src, "Comprobante*"))
 
-        if len(files) == 1:
-            file = files[0]
-            if os.path.isfile(file):
-                # Rename the file before moving it
-                new_file_name = f"{day_map[dia]}.pdf"
-                logging.debug(f"new_file_name is {new_file_name}")
-                new_file_path = os.path.join(trg, new_file_name)
-                shutil.move(file, new_file_path)
-                logging.debug(f"Renamed file {file} to {new_file_name} and copied to {trg}")
-                logging.info("Moved file to destino")
+        try:
+            if len(files) == 1:
+                file = files[0]
+                if os.path.isfile(file):
+                    # Rename the file before moving it
+                    new_file_name = f"{day_map[dia]}.pdf"
+                    logging.debug(f"new_file_name is {new_file_name}")
+                    new_file_path = os.path.join(trg, new_file_name)
+                    shutil.move(file, new_file_path)
+                    logging.debug(f"Renamed file {file} to {new_file_name} and copied to {trg}")
+                    logging.info("Moved file to destino")
+        except Exception as e:
+            logging.error(f"Error al mover el archivo: {e}")
+            sleep(15)
         logging.info("Completed test_comprar_pasajes successfully")
 
 
