@@ -4,6 +4,8 @@ import os
 import shutil
 import unittest
 from time import sleep
+import subprocess
+import json
 
 from pyunitreport import HTMLTestRunner
 from selenium import webdriver
@@ -15,7 +17,53 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-from utils.var_pasajes import *
+from utils.var_pasajes import (
+    day_map,
+    dictpasaje,
+    var_apellido,
+    var_banco,
+    var_banco_password,
+    var_banco_rut,
+    var_card_number_deb,
+    var_ciudad,
+    var_email,
+    var_email2,
+    var_hora_ida,
+    var_hora_vuelta,
+    var_hora_vuelta_v,
+    var_mes_siguiente,
+    var_nombre,
+    var_numero_pasaje_ida,
+    var_numero_pasaje_vuelta,
+    var_rut,
+    var_semana,
+    var_src,
+    var_src,
+    var_telefono,
+    var_trg,
+    var_trg,
+    var_url,
+)
+
+
+# Define your get_password function here
+def get_1password(item_name):
+    try:
+        command = f'op read {item_name}'
+        result = subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
+        try:
+            # Try to parse the output as JSON
+            data = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            # If parsing as JSON fails, return the raw output
+            data = result.stdout.strip()
+        return data
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+# Usage: retrieve the card number from 1Password
+var_card_number_deb = str(get_1password('op://Dev/var_pasajes.py/values/var_card_number_deb'))
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='test_log.log', filemode='w')
 
@@ -23,6 +71,8 @@ NOT_FOUND_ERROR_MSG = "Element with '{}' '{}' was not found."
 CLICKABLE_ERROR_MSG = "Element with '{}' '{}' was not clickable after {} seconds."
 CSS_SELECTOR_DEB_CONTINUAR = 'body > app-root > app-home > main-panel > main > section > right-panel > app-tarjeta > form > button'
 XPATH_MES_SIGUIENTE = '/html/body/div[4]/div/a[2]'
+RUT_LABEL = "Rut: {}"
+FIN_PAGINA_5 = "FIN PAGINA 5"
 
 class CompraPasajes(unittest.TestCase):
 
@@ -248,7 +298,7 @@ class CompraPasajes(unittest.TestCase):
 
         logging.debug("Nombre: {}".format(nombre.get_attribute('value')))
         logging.debug("Apellido: {}".format(apellido.get_attribute('value')))
-        logging.debug("Rut: {}".format(rut.get_attribute('value')))
+        logging.debug(RUT_LABEL.format(rut.get_attribute('value')))
         logging.debug("Email: {}".format(email.get_attribute('value')))
         logging.debug("Email2: {}".format(email2.get_attribute('value')))
         logging.debug("Telefono: {}".format(telefono.get_attribute('value')))
@@ -310,7 +360,7 @@ class CompraPasajes(unittest.TestCase):
 
         if(var_banco == "1"):
             logging.info("Selected Banco Itau")
-            logging.info("FIN PAGINA 5")
+            logging.info(FIN_PAGINA_5)
             logging.info("INICIO PAGINA 6 (Banco Itau)")
 
             sleep(2)
@@ -322,6 +372,7 @@ class CompraPasajes(unittest.TestCase):
                 raise
             deb_continuar.click()
             sleep(10)
+            logging.info(FIN_PAGINA_5)
             # Asigna elemento de rut
             try:
                 rut_cliente = driver.find_element(By.ID, 'rutCliente')
@@ -332,7 +383,7 @@ class CompraPasajes(unittest.TestCase):
             rut_cliente.clear()
             # Se ingresa rut
             rut_cliente.send_keys(var_banco_rut)
-            logging.debug("Rut: {}".format(rut_cliente.get_attribute('value')))
+            logging.debug(RUT_LABEL.format(rut_cliente.get_attribute('value')))
             logging.info("Entered rut")
             # Click en continuar
             try:
@@ -365,7 +416,7 @@ class CompraPasajes(unittest.TestCase):
 
         elif(var_banco == "2"):
             logging.info("Selected Banco Scotiabank")
-            logging.info("FIN PAGINA 5")
+            logging.info(FIN_PAGINA_5)
             logging.info("INICIO PAGINA 6 (Banco Scotiabank)")
 
             sleep(1)
@@ -441,7 +492,7 @@ class CompraPasajes(unittest.TestCase):
                 raise
             rut_deb.clear()
             rut_deb.send_keys(var_banco_rut, Keys.TAB)
-            logging.debug("Rut: {}".format(rut_deb.get_attribute('value')))
+            logging.debug(RUT_LABEL.format(rut_deb.get_attribute('value')))
             logging.info("Entered rut")
 
             sleep(1)
@@ -450,7 +501,7 @@ class CompraPasajes(unittest.TestCase):
             except NoSuchElementException:
                 logging.error(NOT_FOUND_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR))
                 raise
-            logging.info("FIN PAGINA 5")
+            logging.info(FIN_PAGINA_5)
             logging.info("INICIO PAGINA 6 (MACH)")
             deb_continuar.click()
 
