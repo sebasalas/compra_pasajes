@@ -512,43 +512,57 @@ class CompraPasajes(unittest.TestCase):
         trg = var_trg
         logging.debug(f"src: {src}, trg: {trg}")
 
-        # Elimina los archivos que comienzan con "Comprobante*" en la carpeta origen
-        for f in glob.glob(os.path.join(src, "Comprobante*")):
-            if os.path.isfile(f):
-                os.remove(f)
-                logging.info("Removed files")
+        # Attempt the download and file move up to three times
+        for attempt in range(1, 4):
+            logging.info(f"Attempt {attempt} to download and move file")
 
-        # Asigna elemento botón de descarga de pdf
-        logging.debug("Waiting for element with XPATH: '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span'")
-        try:
-            descargar_pdf = WebDriverWait(self.driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span')))
-        except TimeoutException:
-            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span', 120))
-            raise
-        descargar_pdf.click()
-        logging.info("Clicked descargar pdf")
+            # Elimina los archivos que comienzan con "Comprobante*" en la carpeta origen
+            for f in glob.glob(os.path.join(src, "Comprobante*")):
+                if os.path.isfile(f):
+                    os.remove(f)
+                    logging.info("Removed files")
 
-        sleep(3)
+            # Asigna elemento botón de descarga de pdf
+            logging.debug("Waiting for element with XPATH: '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span'")
+            try:
+                descargar_pdf = WebDriverWait(self.driver, 120).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span')))
+            except TimeoutException:
+                logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div[3]/section/div[2]/div[2]/div/section/div/div[1]/div/div/div/table/tbody/tr[9]/td/a/span', 120))
+                continue  # Skip the rest of this loop iteration and try again
+            
+            descargar_pdf.click()
+            logging.info("Clicked descargar pdf")
+
+            sleep(3)
+
+            # Encuentra el archivo que cumple con el patrón "Comprobante*" y lo mueve a la carpeta destino
+            files = glob.glob(os.path.join(src, "Comprobante*"))
+            success = False  # Flag to indicate success
+            try:
+                if len(files) == 1:
+                    file = files[0]
+                    if os.path.isfile(file):
+                        # Rename the file before moving it
+                        new_file_name = f"{day_map[dia]}.pdf"
+                        logging.debug(f"new_file_name is {new_file_name}")
+                        new_file_path = os.path.join(trg, new_file_name)
+                        shutil.move(file, new_file_path)
+                        logging.debug(f"Renamed file {file} to {new_file_name} and copied to {trg}")
+                        logging.info("Moved file to destino")
+                        success = True  # Set success flag to True
+            except Exception as e:
+                logging.error(f"Error al mover el archivo: {e}")
+                sleep(3)
+
+            if success:
+                logging.info("Download and file move successful")
+                break  # Break out of the loop early if successful
+            else:
+                logging.info("Download and file move unsuccessful, retrying...")
+
+        if not success:
+            logging.error("Failed to download and move file after 3 attempts")
         
-        # Encuentra el archivo que cumple con el patrón "Comprobante*" y lo mueve a la carpeta destino
-        files = glob.glob(os.path.join(src, "Comprobante*"))
-
-        try:
-            if len(files) == 1:
-                file = files[0]
-                if os.path.isfile(file):
-                    # Rename the file before moving it
-                    new_file_name = f"{day_map[dia]}.pdf"
-                    logging.debug(f"new_file_name is {new_file_name}")
-                    new_file_path = os.path.join(trg, new_file_name)
-                    shutil.move(file, new_file_path)
-                    logging.debug(f"Renamed file {file} to {new_file_name} and copied to {trg}")
-                    logging.info("Moved file to destino")
-        except Exception as e:
-            logging.error(f"Error al mover el archivo: {e}")
-            sleep(15)
-        logging.info("Completed test_comprar_pasajes successfully")
-
 
     def tearDown(self):
         logging.info("Tearing down the test")
