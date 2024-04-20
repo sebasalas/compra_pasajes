@@ -116,5 +116,8 @@ __pycache__
 #reports
 /reports
 
+#env
+environment/
+
 #other
 compra_pasajes/
