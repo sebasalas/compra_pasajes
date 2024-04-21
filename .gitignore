@@ -118,6 +118,7 @@ __pycache__
 
 #env
 environment/
+env/
 
 #other
 compra_pasajes/
