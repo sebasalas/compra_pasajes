@@ -31,6 +31,7 @@ from utils.var_pasajes import (
     var_hora_ida,
     var_hora_vuelta,
     var_hora_vuelta_v,
+    var_loop,
     var_mes_siguiente,
     var_nombre,
     var_numero_pasaje_ida,
@@ -570,20 +571,28 @@ class CompraPasajes(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # dia: 1-5 (lunes a viernes)
-    while True:
-        dia_str = input('Día de la semana (1-5): ')
-        try:
-            dia = int(dia_str)
-            if 1 <= dia <= 5:
-                break
-            else:
-                print("Entrada no válida: Por favor, introduce un número entre 1 y 5 inclusive")
-                logging.debug("invalid dia range")
-        except ValueError:
-            print("Entrada no válida: Por favor, introduce un valor numérico")
-            logging.debug("invalid dia format")
-    logging.debug(f"dia selected: {dia}")
+    if var_loop == 0:
+        # Manual input version
+        while True:
+            # dia: 1-5 (lunes a viernes)
+            dia_str = input('Día de la semana (1-5): ')
+            try:
+                dia = int(dia_str)
+                if 1 <= dia <= 5:
+                    break
+                else:
+                    print("Entrada no válida: Por favor, introduce un número entre 1 y 5 inclusive")
+                    logging.debug("invalid dia range")
+            except ValueError:
+                print("Entrada no válida: Por favor, introduce un valor numérico")
+                logging.debug("invalid dia format")
+        logging.debug(f"dia selected: {dia}")
+
+    elif var_loop == 1:
+        # Automated loop version
+        for dia in range(1, 6):  # Loop de Lunes (1) a Viernes (5)
+            logging.debug(f"dia selected: {dia}")
+
     # semana: 1-6 (según fila en calendario)
     semana = var_semana
     logging.debug(f"semana selected: {semana}")
@@ -591,4 +600,5 @@ if __name__ == "__main__":
     logging.debug(f"numero_pasaje_ida selected: {numero_pasaje_ida}")
     numero_pasaje_vuelta = var_numero_pasaje_vuelta
     logging.debug(f"numero_pasaje_vuelta selected: {numero_pasaje_vuelta}")
-    unittest.main(verbosity=2, testRunner=HTMLTestRunner(output='reportes', report_name='pasajes-report'))
+
+    unittest.main(verbosity=2, testRunner=HTMLTestRunner(output='reportes', report_name=f'pasajes-report-dia-{dia if var_loop == 0 else "auto"}'))

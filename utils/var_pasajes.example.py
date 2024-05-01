@@ -16,6 +16,7 @@ var_telefono = '+56911111111'
 var_ciudad = 'Santiago'
 var_card_number_deb = '1234123412341234'
 var_mes_siguiente = 0
+var_loop = 0
 if sys.platform.startswith("win"):
      var_src = r'C:\Users\juan\Downloads'
      var_trg = r'C:\Users\juan\Documents\pasajes'
