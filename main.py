@@ -255,17 +255,42 @@ class CompraPasajes(unittest.TestCase):
         except TimeoutException:
             logging.error(CLICKABLE_ERROR_MSG.format('ID', 'lugarSubida1', 10))
             raise
-        subida_ida.click()
+
+        # Desplaza el elemento a la vista y clickea mediante JavaScript
+        driver.execute_script("arguments[0].scrollIntoView(true);", subida_ida)
+        driver.execute_script("arguments[0].click();", subida_ida)
+
         # Selecciona Shopping
-        shopping = driver.find_element(By.XPATH, '/html/body/div[4]/section/div[2]/div[2]/div/div/section[3]/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr[1]/td[9]/b/select/option[4]')
+        try:
+            shopping = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '/html/body/div[4]/section/div[2]/div[2]/div/div/section[3]/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr[1]/td[9]/b/select/option[4]'))
+            )
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div[4]/section/div[2]/div[2]/div/div/section[3]/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr[1]/td[9]/b/select/option[4]', 10))
+            raise
         shopping.click()
         logging.info("Selected Shopping como lugar de subida de ida")
 
         # Despliega opciones de subida vuelta (select)
-        subida_vuelta = driver.find_element(By.ID, 'lugarSubida2')
-        subida_vuelta.click()
+        logging.debug("Waiting for element with ID: 'lugarSubida2'")
+        try:
+            subida_vuelta = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, 'lugarSubida2')))
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'lugarSubida2', 10))
+            raise
+
+        # Desplaza el elemento a la vista y clickea mediante JavaScript
+        driver.execute_script("arguments[0].scrollIntoView(true);", subida_vuelta)
+        driver.execute_script("arguments[0].click();", subida_vuelta)
+
         # Selecciona Bellavista
-        bellavista = driver.find_element(By.XPATH, '/html/body/div[4]/section/div[2]/div[2]/div/div/section[3]/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr[2]/td[9]/b/select/option[2]')
+        try:
+            bellavista = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '/html/body/div[4]/section/div[2]/div[2]/div/div/section[3]/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr[2]/td[9]/b/select/option[2]'))
+            )
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div[4]/section/div[2]/div[2]/div/div/section[3]/div[1]/div/div/div[2]/div/div[1]/table/tbody/tr[2]/td[9]/b/select/option[2]', 10))
+            raise
         bellavista.click()
         logging.info("Selected Bellavista como lugar de subida de vuelta")
 
