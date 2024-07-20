@@ -38,9 +38,7 @@ from utils.var_pasajes import (
     var_rut,
     var_semana,
     var_src,
-    var_src,
     var_telefono,
-    var_trg,
     var_trg,
     var_url,
 )
@@ -114,6 +112,7 @@ class CompraPasajes(unittest.TestCase):
             raise
         rancagua.click()
         logging.info("Selected Rancagua como ciudad de origen")
+
         # Despliega opciones de ciudad de destino (select)
         try:
             destino = driver.find_element(By.ID, 'ciudadDestino')
@@ -217,33 +216,51 @@ class CompraPasajes(unittest.TestCase):
 
         # Selecciona hora de vuelta (radio)
         xpath_hora_vuelta = f"//table[@id='IdTable1']//td[text()='{hora_vuelta}']/preceding-sibling::td/input[@type='radio']"
-        hora_vuelta_radio = driver.find_element(By.XPATH, f'{xpath_hora_vuelta}')
+        try:
+            hora_vuelta_radio = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath_hora_vuelta)))
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', xpath_hora_vuelta, 10))
+            raise
         hora_vuelta_radio.click()
         logging.info("Selected hora de vuelta")
 
         # Click en Siguiente
-        boton_siguiente_horario = driver.find_element(By.ID, 'btnSiguientePaso1')
+        try:
+            boton_siguiente_horario = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'btnSiguientePaso1')))
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'btnSiguientePaso1', 10))
+            raise
         boton_siguiente_horario.click()
         logging.info("FIN PAGINA 2")
 
         logging.info("INICIO PAGINA 3 (Tabla de asientos)")
         # Se asinga valor a entregar según el número de pasaje, diccionario dictpasaje
         # Selecciona asiento de ida
-        logging.debug(f"Waiting for element with XPath: '/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_ida]}'")
+        logging.debug(f"Waiting for element with XPath: '/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[var_numero_pasaje_ida]}'")
         try:
-            pasaje_ida = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_ida]}')))
+            pasaje_ida = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[var_numero_pasaje_ida]}')))
         except TimeoutException:
-            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_ida]}', 10))
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[1]/div/div[2]/div/div/div[1]/{dictpasaje[var_numero_pasaje_ida]}', 10))
             raise
         pasaje_ida.click()
-        logging.info(f"Selected asiento de ida: {numero_pasaje_ida}")
+        logging.info(f"Selected asiento de ida: {var_numero_pasaje_ida}")
+
         # Selecciona asiento de vuelta
-        pasaje_vuelta = driver.find_element(By.XPATH, f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[2]/div/div[2]/div/div/div[1]/{dictpasaje[numero_pasaje_vuelta]}')
+        logging.debug(f"Waiting for element with XPath: '/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[2]/div/div[2]/div/div/div[1]/{dictpasaje[var_numero_pasaje_vuelta]}'")
+        try:
+            pasaje_vuelta = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[2]/div/div[2]/div/div/div[1]/{dictpasaje[var_numero_pasaje_vuelta]}')))
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('XPATH', f'/html/body/div[4]/section/div[2]/div[2]/div/div/section[2]/div[1]/div[2]/div/div[2]/div/div/div[1]/{dictpasaje[var_numero_pasaje_vuelta]}', 10))
+            raise
         pasaje_vuelta.click()
-        logging.info(f"Selected asiento de vuelta: {numero_pasaje_vuelta}")
+        logging.info(f"Selected asiento de vuelta: {var_numero_pasaje_vuelta}")
 
         # Click en Siguiente
-        boton_siguiente_asientos = driver.find_element(By.ID, 'btnSiguientePaso2')
+        try:
+            boton_siguiente_asientos = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'btnSiguientePaso2')))
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'btnSiguientePaso2', 10))
+            raise
         boton_siguiente_asientos.click()
         logging.info("FIN PAGINA 3")
 
@@ -256,7 +273,7 @@ class CompraPasajes(unittest.TestCase):
             logging.error(CLICKABLE_ERROR_MSG.format('ID', 'lugarSubida1', 10))
             raise
 
-        # Desplaza el elemento a la vista y clickea mediante JavaScript
+        # Scroll the element into view and click using JavaScript
         driver.execute_script("arguments[0].scrollIntoView(true);", subida_ida)
         driver.execute_script("arguments[0].click();", subida_ida)
 
@@ -279,7 +296,7 @@ class CompraPasajes(unittest.TestCase):
             logging.error(CLICKABLE_ERROR_MSG.format('ID', 'lugarSubida2', 10))
             raise
 
-        # Desplaza el elemento a la vista y clickea mediante JavaScript
+        # Scroll the element into view and click using JavaScript
         driver.execute_script("arguments[0].scrollIntoView(true);", subida_vuelta)
         driver.execute_script("arguments[0].click();", subida_vuelta)
 
@@ -353,7 +370,11 @@ class CompraPasajes(unittest.TestCase):
         driver.switch_to.window(current_handle)
 
         # Click en Pague y Compre ahora
-        boton_pagar = driver.find_element(By.ID, 'btnVtnFinal')
+        try:
+            boton_pagar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'btnVtnFinal')))
+        except TimeoutException:
+            logging.error(CLICKABLE_ERROR_MSG.format('ID', 'btnVtnFinal', 10))
+            raise
         boton_pagar.click()
         logging.info("FIN PAGINA 4")
 
@@ -367,6 +388,7 @@ class CompraPasajes(unittest.TestCase):
             raise
         boton_tarjetas.click()
         logging.info("Selected tarjetas")
+
         # Código sólo para débito
         logging.debug("Waiting for element with ID: 'card-number'")
         try:
@@ -412,9 +434,9 @@ class CompraPasajes(unittest.TestCase):
             logging.info("Entered rut")
             # Click en continuar
             try:
-                boton_continuar = driver.find_element(By.ID, 'btnIngresar')
-            except NoSuchElementException:
-                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'btnIngresar'))
+                boton_continuar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'btnIngresar')))
+            except TimeoutException:
+                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'btnIngresar', 10))
                 raise
             boton_continuar.click()
             # Asigna elemento de clave dinámica
@@ -422,7 +444,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 clave_dinamica = WebDriverWait(self.driver, 50).until(EC.element_to_be_clickable((By.ID, 'pinVisible')))
             except TimeoutException:
-                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'pinVisible', 10))
+                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'pinVisible', 50))
                 raise
             # Limpia valor
             clave_dinamica.clear()
@@ -433,9 +455,9 @@ class CompraPasajes(unittest.TestCase):
             logging.debug("Entered clave dinámica")
             # Click en continuar
             try:
-                aceptar_dinamica = driver.find_element(By.ID, 'btnAutorizar')
-            except NoSuchElementException:
-                logging.error(NOT_FOUND_ERROR_MSG.format('ID', 'btnAutorizar'))
+                aceptar_dinamica = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'btnAutorizar')))
+            except TimeoutException:
+                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'btnAutorizar', 10))
                 raise
             aceptar_dinamica.click()
 
@@ -457,9 +479,9 @@ class CompraPasajes(unittest.TestCase):
 
             sleep(1)
             try:
-                deb_continuar = driver.find_element(By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)
-            except NoSuchElementException:
-                logging.error(NOT_FOUND_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR))
+                deb_continuar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)))
+            except TimeoutException:
+                logging.error(CLICKABLE_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR, 10))
                 raise
             deb_continuar.click()
             logging.info("INICIO PAGINA 6 (Banco scotiabank)")
@@ -469,7 +491,7 @@ class CompraPasajes(unittest.TestCase):
             try:
                 rut_cliente = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.ID, 'rut')))
             except TimeoutException:
-                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'rut', 10))
+                logging.error(CLICKABLE_ERROR_MSG.format('ID', 'rut', 20))
                 raise
             # Limpia valor
             rut_cliente.clear()
@@ -491,9 +513,9 @@ class CompraPasajes(unittest.TestCase):
             logging.info("Entered password")
             # Click en continuar
             try:
-                boton_continuar = driver.find_element(By.XPATH, '/html/body/div/div[2]/div/form/div[7]/button[1]')
-            except NoSuchElementException:
-                logging.error(NOT_FOUND_ERROR_MSG.format('XPATH', '/html/body/div/div[2]/div/form/div[7]/button[1]'))
+                boton_continuar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div[2]/div/form/div[7]/button[1]')))
+            except TimeoutException:
+                logging.error(CLICKABLE_ERROR_MSG.format('XPATH', '/html/body/div/div[2]/div/form/div[7]/button[1]', 10))
                 raise
             boton_continuar.click()
 
@@ -522,13 +544,13 @@ class CompraPasajes(unittest.TestCase):
 
             sleep(1)
             try:
-                deb_continuar = driver.find_element(By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)
-            except NoSuchElementException:
-                logging.error(NOT_FOUND_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR))
+                deb_continuar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, CSS_SELECTOR_DEB_CONTINUAR)))
+            except TimeoutException:
+                logging.error(CLICKABLE_ERROR_MSG.format('CSS_SELECTOR', CSS_SELECTOR_DEB_CONTINUAR, 10))
                 raise
+            deb_continuar.click()
             logging.info(FIN_PAGINA_5)
             logging.info("INICIO PAGINA 6 (MACH)")
-            deb_continuar.click()
 
         logging.info("FIN PAGINA 6")
         logging.info("INICIO PAGINA 7 (Comprobante)")
