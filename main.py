@@ -81,6 +81,16 @@ class CompraPasajes(unittest.TestCase):
         driver.implicitly_wait(10)
         driver.get(var_url)
         driver.maximize_window()
+        # Cerrar modal si aparece
+        try:
+            # Espera hasta 10 segundos para que aparezca el botón de cerrar modal
+            modal_close_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '/html/body/div[3]/div[2]/div/div/div/button'))
+            )
+            modal_close_button.click()
+            logging.info("Closed modal window successfully")
+        except TimeoutException:
+            logging.info("No modal window found, continuing with test")
         logging.info("Test configurado OK")
 
     def test_comprar_pasajes(self):
