@@ -17,11 +17,14 @@ var_ciudad = 'Santiago'
 var_card_number_deb = '1234123412341234'
 var_mes_siguiente = 0
 if sys.platform.startswith("win"):
-     var_src = r'C:\Users\juan\Downloads'
-     var_trg = r'C:\Users\juan\Documents\pasajes'
+    var_src = r'C:\Users\juan\Downloads'
+    var_trg = r'C:\Users\juan\Documents\pasajes'
+elif sys.platform.startswith("darwin"):
+    var_src = '/Users/juan/Downloads'
+    var_trg = '/Users/juan/Documents/pasajes'
 else:
-     var_src = '/home/juan/Downloads'
-     var_trg = '/home/juan/Documents/pasajes'
+    var_src = '/home/juan/Downloads'
+    var_trg = '/home/juan/Documents/pasajes'
 var_url = 'http://ventaweb.pullmanflorida.cl/'
 var_banco_rut = '22222222-2'
 var_banco_password = 'abc123'
